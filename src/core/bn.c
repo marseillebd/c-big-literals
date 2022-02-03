@@ -31,7 +31,7 @@ bl_result bn__copy(bn_*restrict dst, const bn_*restrict src) {
   return BL_OK;
 }
 
-bl_result bn__u64(bn_* dst, uint64_t src) {
+bl_result bn__umax(bn_* dst, uintmax_t src) {
   for (size_t i = 0; i < dst->len; ++i) {
     dst->base256le[i] = src & 0xFF;
     src = src >> 8;
@@ -61,17 +61,26 @@ bool bn__bit(const bn_* src, size_t i) {
 }
 
 bl_ord bn__cmp(const bn_* a, const bn_* b) {
-  if (a->len < b->len) { return BL_LT; }
-  else if (a->len > b->len) { return BL_GT; }
-  else {
-    for (size_t i = a->len; i > 0; --i) {
-      uint8_t aDigit = a->base256le[i - 1];
-      uint8_t bDigit = b->base256le[i - 1];
-      if (aDigit < bDigit) { return BL_LT; }
-      else if (aDigit > bDigit) { return BL_GT; }
-    }
-    return BL_EQ;
+  // ensure a is longer than b
+  // and remember to flip the results if we had to flip inputs
+  bool flip = false;
+  if (a->len < b->len) {
+    const bn_* tmp = a; a = b; b = tmp;
+    flip = true;
   }
+  // if high bytes of `a` are non-zero, `a` is larger
+  for (size_t i = a->len; i > b->len; --i) {
+    if (a->base256le[i - 1] != 0) { return !flip ? BL_GT : BL_LT; }
+  }
+  // otherwise, lexicographic compare in reverse
+  for (size_t i = b->len; i > 0; --i) {
+    uint8_t aDigit = a->base256le[i - 1];
+    uint8_t bDigit = b->base256le[i - 1];
+    if (aDigit > bDigit) { return !flip ? BL_GT : BL_LT; }
+    else if (aDigit < bDigit) { return !flip ? BL_LT : BL_GT; }
+  }
+  // we made it to digit zero
+  return BL_EQ;
 }
 
 ////// Bitwise //////
@@ -85,7 +94,6 @@ void bn__and(bn_* dst, const bn_* a, const bn_* b) {
     dst->base256le[i] = a->base256le[i] & b->base256le[i];
   }
   dst->len = bigI;
-  bn__normalize(dst);
 }
 
 size_t bn__sizeof_or(const bn_* a, const bn_* b) {
@@ -162,9 +170,6 @@ bl_result bn__add(bn_* dst, const bn_* a, const bn_* b) {
     dst->len = a->len + 1;
   }
   // otherwise, the size of `dst` is bounded by the size of `a`
-  else {
-    dst->len = a->len;
-  }
   return BL_OK;
 }
 
@@ -189,36 +194,20 @@ bl_result bn__sub(bn_* dst, const bn_* a, const bn_* b) {
     dst->base256le[i] = borrow & 0xFF;
     borrow = borrow >> 8;
   }
-  // if there's one more digit in `a` and it cancels out the borrow, then we're ok
-  if ( a->len == dst->len + 1 && borrow + a->base256le[a->len - 1] == 0) {
-    bn__normalize(dst);
-    return BL_OK;
-  }
-  // but if there are digits left in `a` that aren't cancelled out by borrow, that's an overflow
-  else if (dst->len < a->len || borrow != 0) {
+  // if there are digits left in `a`, or there is a remaining borrow, that's an overflow
+  if (dst->len < a->len || borrow != 0) {
     dst->len = 0; return BL_OVERFLOW;
   }
-  // otherwise, trim leading zeros off the destination
-  else {
-    dst->len = a->len;
-    bn__normalize(dst);
-    return BL_OK;
-  }
+  return BL_OK;
 }
 
 size_t bn__sizeof_mul(const bn_* a, const bn_* b) {
   return a->len + b->len;
 }
 bl_result bn__mul(bn_* dst, const bn_* a, const bn_* b) {
-  // special case for multiply by zero
-  if (a->len == 0 || b->len == 0) {
-    dst->len = 0;
-    return BL_OK;
-  }
   // check the destination is large enough
   // I'm pessimistic about this so that I can simplify everything else about the algorithm
   if (dst->len < a->len + b->len) { return BL_OVERFLOW; }
-
   for (size_t i = 0; i < a->len; ++i) {
     for (size_t j = 0; j < b->len; ++j) {
       // create a double-width multiply for the two digits
@@ -233,8 +222,6 @@ bl_result bn__mul(bn_* dst, const bn_* a, const bn_* b) {
       }
     }
   }
-  dst->len = a->len + b->len;
-  bn__normalize(dst);
   return BL_OK;
 }
 
@@ -245,23 +232,15 @@ bl_result bn__divmod(bn_* q, bn_* r, const bn_* n, const bn_* d) {
   // I'm pessimistic about this so that I can simplify everything else about the algorithm
   if (q->len < n->len || r->len < d->len) { return BL_OVERFLOW; }
 
-  size_t saveRLen = r->len; // this is the original size of `r`
-  // the reason we want ^this is so that we can easily normalize `r` before sending it to `cmp` and `sub`.
-
   for (size_t i = 8*n->len; i > 0; --i) {
     bool nBit = bn__bit(n, i - 1);
     bn__shl(r, 1);
     bn__wrbit(r, 0, nBit);
-    bn__normalize(r); // temporarily normalize `r`
     if (bn__cmp(r, d) != BL_LT) {
       bn__sub(r, r, d);
       bn__wrbit(q, i - 1, true);
     }
-    r->len = saveRLen; // restore non-normalized `r`
   }
-
-  bn__normalize(q);
-  bn__normalize(r);
   return BL_OK;
 }
 

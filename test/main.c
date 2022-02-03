@@ -57,14 +57,14 @@ int main() {
     printbn(a);
   }
 
-  printf("=== bn__u64 ===\n"); {
-    err = bn__u64(a, 0); printbn(a); assert(err == BL_OK); a->len = 128;
-    err = bn__u64(a, 0xdeadbeef); assert(err == BL_OK); printbn(a); a->len = 128;
-    err = bn__u64(a, UINT64_MAX); assert(err == BL_OK); printbn(a); a->len = 128;
+  printf("=== bn__umax ===\n"); {
+    err = bn__umax(a, 0); printbn(a); assert(err == BL_OK); a->len = 128;
+    err = bn__umax(a, 0xdeadbeef); assert(err == BL_OK); printbn(a); a->len = 128;
+    err = bn__umax(a, UINT64_MAX); assert(err == BL_OK); printbn(a); a->len = 128;
   }
 
   printf("=== bn__bit ===\n"); {
-    bn__u64(a, 0xf0);
+    bn__umax(a, 0xf0);
     for (int i = 0; i < 8; ++i) {
       printf("%d", bn__bit(a, i));
     }
@@ -85,27 +85,27 @@ int main() {
   }
 
   printf("=== bn__shr ===\n"); {
-    bn__u64(a, 0x54321); printbn(a);
+    bn__umax(a, 0x54321); printbn(a);
     bn__shr(a, 8); printbn(a);
     bn__shr(a, 1); printbn(a);
-    a->len = 128; bn__u64(a, 0x54321); printbn(a);
+    a->len = 128; bn__umax(a, 0x54321); printbn(a);
     bn__shr(a, 17); printbn(a);
     a->len = 128; bn__blank(a);
   }
 
   printf("=== bn__shl ===\n"); {
-    bn__u64(a, 0x54321); a ->len = 4; printbn(a);
+    bn__umax(a, 0x54321); a ->len = 4; printbn(a);
     bn__shl(a, 8); printbn(a);
     bn__shl(a, 1); printbn(a);
-    a->len = 128; bn__u64(a, 0x54321); a ->len = 5; printbn(a);
+    a->len = 128; bn__umax(a, 0x54321); a ->len = 5; printbn(a);
     bn__shl(a, 17); printbn(a);
     a->len = 128; bn__blank(a);
   }
 
   printf("=== bn__cmp ===\n"); {
-    bn__u64(a, 0x123);
-    bn__u64(b, 0x123);
-    bn__u64(c, 0x9876543210);
+    bn__umax(a, 0x123);
+    bn__umax(b, 0x123);
+    bn__umax(c, 0x9876543210);
     printf("%d ", bn__cmp(a, a));
     printf("%d ", bn__cmp(a, b));
     printf("%d ", bn__cmp(b, a));
@@ -116,64 +116,70 @@ int main() {
   }
 
   printf("=== bn__add ===\n"); {
-    bn__u64(a, 0x123);
-    bn__u64(b, 0x9876543210);
-    c->len = bn__sizeof_add(a, b);
+    bn__umax(a, 0x123);
+    bn__umax(b, 0x9876543210);
+    c->len = bn__sizeof_add(a, b); bn__blank(c);
     err = bn__add(c, a, b); printbn(c); assert(err == BL_OK);
-    bn__u64(a, 0x4);
-    bn__u64(b, 0xFFFF);
-    c->len = bn__sizeof_add(a, b);
+    bn__umax(a, 0x4);
+    bn__umax(b, 0xFFFF);
+    c->len = bn__sizeof_add(a, b); bn__blank(c);
     err = bn__add(c, a, b); printbn(c); assert(err == BL_OK);
-    bn__u64(a, 0x4);
-    bn__u64(b, 0xFFF0);
-    c->len = bn__sizeof_add(a, b);
+    bn__umax(a, 0x4);
+    bn__umax(b, 0xFFF0);
+    c->len = bn__sizeof_add(a, b); bn__blank(c);
     err = bn__add(c, a, b); printbn(c); assert(err == BL_OK);
     a->len = b->len = c->len = 128; bn__blank(a); bn__blank(b); bn__blank(c);
   }
 
   printf("=== bn__sub ===\n"); {
-    bn__u64(a, 0xFFFF); bn__u64(b, 0x4);
+    bn__umax(a, 0xFFFF); bn__umax(b, 0x4);
     c->len = bn__sizeof_sub(a, b);
     err = bn__sub(c, a, b); printbn(c); assert(err == BL_OK);
-    a->len = b->len = 128; bn__u64(a, 0x9876543210); bn__u64(b, 0x123);
+    a->len = b->len = 128; bn__umax(a, 0x9876543210); bn__umax(b, 0x123);
     c->len = bn__sizeof_sub(a, b);
     err = bn__sub(c, a, b); printbn(c); assert(err == BL_OK);
     a->len = b->len = c->len = 128; bn__blank(a); bn__blank(b); bn__blank(c);
-    a->len = b->len = 128; bn__u64(a, 0x01fe); bn__u64(b, 0x00ff);
-    c->len = 1;
+    a->len = b->len = 128; bn__umax(a, 0x01fe); bn__umax(b, 0x00ff);
+    c->len = 2;
     err = bn__sub(c, a, b); printbn(c); assert(err == BL_OK);
     a->len = b->len = c->len = 128; bn__blank(a); bn__blank(b); bn__blank(c);
   }
 
   printf("=== bn__mul ===\n"); {
-    bn__u64(a, 0x10);
-    bn__u64(b, 0x10);
+    bn__umax(a, 0x10);
+    bn__umax(b, 0x10);
     c->len = bn__sizeof_mul(a, b);
     err = bn__mul(c, a, b); printbn(c); assert(err == BL_OK);
     a->len = b->len = c->len = 128; bn__blank(c);
 
-    bn__u64(a, 0x4);
-    bn__u64(b, 0x1000);
+    bn__umax(a, 0x4);
+    bn__umax(b, 0x1000);
     c->len = bn__sizeof_mul(a, b);
     err = bn__mul(c, a, b); printbn(c); assert(err == BL_OK);
     a->len = b->len = c->len = 128; bn__blank(c);
 
-    bn__u64(a, 0x123);
-    bn__u64(b, 0x9876543210);
+    bn__umax(a, 0xFF);
+    bn__umax(b, 0xFFFF);
+    c->len = bn__sizeof_mul(a, b);
+    err = bn__mul(c, a, b); printbn(c); assert(err == BL_OK);
+    a->len = b->len = c->len = 128; bn__blank(c);
+
+    bn__umax(a, 0x123);
+    bn__umax(b, 0x9876543210);
     c->len = bn__sizeof_mul(a, b);
     err = bn__mul(c, a, b); printbn(c); assert(err == BL_OK);
     a->len = b->len = c->len = 128; bn__blank(a); bn__blank(b); bn__blank(c);
   }
 
   printf("=== bn__divmod ===\n"); {
-    bn__u64(a, 0x137);
-    bn__u64(b, 0x42);
+    bn__umax(a, 0x137);
+    bn__umax(b, 0x42);
     c->len = bn__sizeof_div(a, b); bn__blank(c);
     d->len = bn__sizeof_mod(a, b); bn__blank(d);
     err = bn__divmod(c, d, a, b); printbn(c); printbn(d); assert(err == BL_OK);
     a->len = b->len = c->len = d->len = 128; bn__blank(a); bn__blank(b); bn__blank(c); bn__blank(d);
-    bn__u64(a, 0x42);
-    bn__u64(b, 0x137);
+    bn__umax(a, 0x42);
+    bn__umax(b, 0x137);
     c->len = bn__sizeof_div(a, b); bn__blank(c);
     d->len = bn__sizeof_mod(a, b); bn__blank(d);
     err = bn__divmod(c, d, a, b); printbn(c); printbn(d); assert(err == BL_OK);
@@ -181,24 +187,24 @@ int main() {
   }
 
   printf("=== bn__and ===\n"); {
-    bn__u64(a, 0x321);
-    bn__u64(b, 0x23);
+    bn__umax(a, 0x321);
+    bn__umax(b, 0x23);
     c->len = bn__sizeof_and(a, b);
     bn__and(c, a, b); printbn(c);
     a->len = b->len = c->len = 128; bn__blank(a); bn__blank(b); bn__blank(c);
   }
 
   printf("=== bn__or ===\n"); {
-    bn__u64(a, 0x321);
-    bn__u64(b, 0x23);
+    bn__umax(a, 0x321);
+    bn__umax(b, 0x23);
     c->len = bn__sizeof_or(a, b);
     bn__or(c, a, b); printbn(c);
     a->len = b->len = c->len = 128; bn__blank(a); bn__blank(b); bn__blank(c);
   }
 
   printf("=== bn__xor ===\n"); {
-    bn__u64(a, 0x321);
-    bn__u64(b, 0x23);
+    bn__umax(a, 0x321);
+    bn__umax(b, 0x23);
     c->len = bn__sizeof_xor(a, b);
     bn__xor(c, a, b); printbn(c);
     a->len = b->len = c->len = 128; bn__blank(a); bn__blank(b); bn__blank(c);

@@ -1,5 +1,5 @@
-#ifndef BN_CORE_BN_H
-#define BN_CORE_BN_H
+#ifndef BIGLIT_BN_CORE
+#define BIGLIT_BN_CORE
 
 // This is the core interface for big natural numbers ℕ. It is only meant to be
 // exposed to advanced users, such as those implementing a more convenient API
@@ -11,17 +11,12 @@
 // and functions `bn_*` that wrap these ones, so the unusual namign nkeeps the
 // core out of the way of API builders.
 
-#include <assert.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 #include "common.h"
-
-static_assert(CHAR_BIT == 8, "target does not have an 8-bit byte");
-static_assert(sizeof(uint8_t) == 1, "target uses more than one byte to store uint8_t");
-static_assert((int16_t)-1 >> 1 == -1, "target does not perform arithmetic shift on uint16_t");
 
 typedef struct bn_ {
   size_t len;
@@ -45,15 +40,15 @@ bl_result bn__copy(bn_*restrict dst, const bn_*restrict src);
 // Place the bytes of the source integer into the destination.
 // The destination _is_ normalized.
 // If the destination is too small to fit all the bits of src, BN_OVERFLOW is returned.
-bl_result bn__u64(bn_* dst, uint64_t src);
+bl_result bn__umax(bn_* dst, uintmax_t src);
 
 ////// Queries //////
 
 // Return whether bit `i` (zero-indexed, little-endian) is set (return one) or not (return zero).
 bool bn__bit(const bn_* src, size_t i);
 
-// Return if the first number is les sthan/equal to/greater than the second.
-// This function requires both inputs to be normalized.
+// Return if the first number is less than/equal to/greater than the second.
+// This function does not require input normalization.
 bl_ord bn__cmp(const bn_* a, const bn_* b);
 
 ////// Bitwise //////
@@ -70,43 +65,42 @@ size_t bn__sizeof_xor(const bn_* a, const bn_* b);
 ////// Arithmetic //////
 
 // Place the result of `a + b` in `dst`.
-// `a` and `b` must be normalized.
-// The destination _is_ normalized.
 // This does _not_ require the destination to be blank.
-// If the destination does not have enough space to store the result (as determiend by bn__sizeof_add),
-// `BN_OVERFLOW` is returned, and the contents of `dst` are undefined.
+// Inputs need not be normalized (but the algorithm will complete faster if they are), and the output is not normalized.
+// If `BN_OVERFLOW` is returned, the contents of `dst` are undefined;
+// `BN_OVERFLOW` will be returned when the destination does not have enough space to store the result,
+// and may be returned if `dst` has less than `bn__sizeof_add(a, b)` space.
 bl_result bn__add(bn_* dst, const bn_* a, const bn_* b);
 // Return the maximum size (in base256 digits) that must be allocated to hold a `bn_` for the result of `a + b`.
 size_t bn__sizeof_add(const bn_* a, const bn_* b);
 
 // Place the result of `a - b` in `dst`.
-// `a` and `b` must be normalized.
-// The destination _is_ normalized.
 // This does _not_ require the destination to be blank.
-// If `b` is larger than `a`, or `dst` does not have enough space to hold the result (as determiend by bn__sizeof_sub),
-// `BN_OVERFLOW` is returned, and the contents of `dst` are undefined.
+// Inputs need not be normalized (but the algorithm will complete faster if they are), and the output is not normalized.
+// If `BN_OVERFLOW` is returned, the contents of `dst` are undefined;
+// `BN_OVERFLOW` will be returned when `b > a` or the destination does not have enough space to store the result,
+// and may be returned if `b->len > a->len`, or `dst` has less than `bn__sizeof_sub(a, b)` space.
 bl_result bn__sub(bn_* dst, const bn_* a, const bn_* b);
 // Return the maximum size (in base256 digits) that must be allocated to hold a `bn_` for the result of `a - b`.
 size_t bn__sizeof_sub(const bn_* a, const bn_* b);
 
 // Place the result of `a * b` in `dst`.
-// `a` and `b` must be normalized.
 // The destination _must_ be provided blank.
-// The destination _is_ normalized.
-// If the destination does not have enough space to store the result (as determiend by bn__sizeof_mul),
-// `BN_OVERFLOW` is returned, and the contents of `dst` are undefined.
+// Inputs need not be normalized (but the algorithm will complete faster if they are), and the output is not normalized.
+// If `BN_OVERFLOW` is returned, the contents of `dst` are undefined;
+// `BN_OVERFLOW` will be returned when the destination does not have enough space to store the result,
+// and may be returned if `dst` has less than `bn__sizeof_mul(a, b)` space.
 bl_result bn__mul(bn_* dst, const bn_* a, const bn_* b);
 // Return the maximum size (in base256 digits) that must be allocated to hold a `bn_` for the result of `a * b`.
 size_t bn__sizeof_mul(const bn_* a, const bn_* b);
 
 // Place the result of `n / d` in `q` and `n % d` in `r`.
-// `a` and `b` must be normalized.
 // The destinations _must_ be provided blank.
-// The destinations _are_ normalized.
-// If `q` and `r` do not have enough space to store intermediate results
-//   (as determiend by bn__sizeof_div and bn__sizeof_mod respectively),
-//   `BN_OVERFLOW` is returned, and the contents of `q` and `r` are undefined.
-// If `d` is zero, `BN_DIVZERO` will be returned, and teh contents of `q` and `r` are undefined.
+// Inputs need not be normalized (but the algorithm will complete faster if they are), and the output is not normalized.
+// If `BN_OVERFLOW` is returned, the contents of `q` and `r` are undefined;
+// `BN_OVERFLOW` will be returned when either destination does not have enough space to store the result,
+// and may be returned if `q` has less than `bn__sizeof_div(a, b)` space or `r` less than `bn__sizeof_div(a, b)`.
+// If `d` is zero, `BN_DIVZERO` will be returned, and the contents of `q` and `r` are undefined.
 //
 // Of course the resulting `q * d + r == n`, but we also have the restriction that `0 ≤ r < d`.
 // The latter actually also trivial in the unsigned case here,

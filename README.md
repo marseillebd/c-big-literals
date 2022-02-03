@@ -67,28 +67,7 @@ These numbers support:
 
 The type here is called `bn`, and operations on it are prefixed with `bn_`.
 
-- [ ] core
-  - [x] bn
-  - [x] bn_result
-  - [x] sizeof
-  - [x] blank, copy, small
-  - [x] bit test
-  - [x] bit assign, shift{l,r} (in-place)
-  - [x] {,sizeof_}{and,or,xor} (complement would require infinite leading ones)
-  - [x] {,sizeof_}{add,sub}
-  - [x] bn_ord, cmp
-  - [x] {,sizeof_}mul
-  - [x] {,sizeof_}divmod
-  - [ ] FIXME: core should not require normalization
-- [ ] malloc
-  - [ ] add, sub, mul, divmod, div, mod
-  - [ ] bit test/assign
-  - [ ] shl, shr
-  - [ ] and, or, xor
-  - [ ] cmp, eq, neq, lt, lte, gt, gte
-  - [ ] read base256 digit
-
-#### Integers, ℤ
+#### Integers, ℤ (TODO)
 
 These support:
   * arithmetic
