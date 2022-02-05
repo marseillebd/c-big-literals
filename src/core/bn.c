@@ -136,6 +136,28 @@ void bn__xor(bn_* dst, const bn_* a, const bn_* b) {
 
 ////// Arithmetic //////
 
+size_t bn__sizeof_inc(const bn_* src) {
+  return src->len + 1;
+}
+bl_result bn__inc(bn_* dst, const bn_* src) {
+  uint16_t carry = 1;
+  for (size_t i = 0; i < min(dst->len, src->len); ++i) {
+    carry += src->base256le[i];
+    dst->base256le[i] = carry & 0xFF;
+    carry = carry >> 8;
+  }
+  if (carry) {
+    if (dst->len <= src->len) { return BL_OVERFLOW; }
+    dst->base256le[src->len] = carry & 0xFF;
+    dst->len = src->len + 1;
+  }
+  else {
+    if (dst->len < src->len) { return BL_OVERFLOW; }
+    dst->len = src->len;
+  }
+  return BL_OK;
+}
+
 size_t bn__sizeof_add(const bn_* a, const bn_* b) {
   return (a->len >= b->len ? a->len : b->len) + 1;
 }
@@ -170,6 +192,21 @@ bl_result bn__add(bn_* dst, const bn_* a, const bn_* b) {
     dst->len = a->len + 1;
   }
   // otherwise, the size of `dst` is bounded by the size of `a`
+  return BL_OK;
+}
+
+size_t bn__sizeof_dec(const bn_* src) {
+  return src->len;
+}
+bl_result bn__dec(bn_* dst, const bn_* src) {
+  int16_t borrow = -1;
+  for (size_t i = 0; i < min(dst->len, src->len); ++i) {
+    borrow += src->base256le[i];
+    dst->base256le[i] = borrow & 0xFF;
+    borrow = borrow >> 8;
+  }
+  if (dst->len < src->len || borrow != 0) { return BL_OVERFLOW; }
+  dst->len = src->len;
   return BL_OK;
 }
 

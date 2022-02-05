@@ -2,11 +2,6 @@
 
 ## v0.1.0
 
-  * inc/dec
-    - [ ] core bn
-    - [ ] basic bn
-    - [ ] use in basic bz
-    - [ ] basic bz
   * version reporting scheme
 
 ## v0.2.0
@@ -21,8 +16,9 @@
 ## v0.3.0
 
   * ℚ interface
+  * ltz, gtz, eqz
 
-## v0.3.0
+## v1.0.0
 
 Who knows?
 

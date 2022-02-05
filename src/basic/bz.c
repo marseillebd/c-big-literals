@@ -88,6 +88,20 @@ bz bz_neg(bz a) {
   return out;
 }
 
+bz bz_inc(bz a) {
+  if (a.isNeg) {
+    bz out = { .isNeg = true, .magnitude = bn_dec(a.magnitude) };
+    if (out.magnitude->len == 0) {
+      out.isNeg = false;
+    }
+    return out;
+  }
+  else {
+    bz out = { .isNeg = false, .magnitude = bn_inc(a.magnitude) };
+    return out;
+  }
+}
+
 bz bz_add(bz a, bz b) {
   bz out;
   if (a.isNeg == b.isNeg) {
@@ -111,6 +125,20 @@ bz bz_add(bz a, bz b) {
     }
   }
   return out;
+}
+
+bz bz_dec(bz a) {
+  if (a.isNeg) {
+    bz out = { .isNeg = true, .magnitude = bn_inc(a.magnitude) };
+    return out;
+  }
+  else if (a.magnitude->len == 0) {
+    return bz_imax(-1);
+  }
+  else {
+    bz out = { .isNeg = false, .magnitude = bn_dec(a.magnitude) };
+    return out;
+  }
 }
 
 bz bz_sub(bz a, bz b) {
@@ -138,11 +166,8 @@ struct bz_divmod bz_divmod(bz a, bz b) {
   };
   if (a.isNeg != b.isNeg) {
     out.div.isNeg = true;
-    // FIXME use a decrement
-    bn* one = bn_umax(1);
-    bn* tmp = bn_add(out.div.magnitude, one);
+    bn* tmp = bn_inc(out.div.magnitude);
     bn_free(out.div.magnitude);
-    bn_free(one);
     out.div.magnitude = tmp;
     tmp = bn_sub(b.magnitude, out.mod.magnitude);
     bn_free(out.mod.magnitude);

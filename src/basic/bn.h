@@ -56,7 +56,12 @@ bn* bn_xor(const bn* a, const bn* b);
 
 ////// Arithmetic //////
 
+bn* bn_inc(const bn* a);
+
 bn* bn_add(const bn* a, const bn* b);
+
+// if `a = 0`, returns zero.
+bn* bn_dec(const bn* a);
 
 // if `b > a`, returns zero.
 bn* bn_sub(const bn* a, const bn* b);

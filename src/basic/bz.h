@@ -43,7 +43,11 @@ bool bz_gte(bz a, bz b);
 
 bz bz_neg(bz a);
 
+bz bz_inc(bz a);
+
 bz bz_add(bz a, bz b);
+
+bz bz_dec(bz a);
 
 bz bz_sub(bz a, bz b);
 

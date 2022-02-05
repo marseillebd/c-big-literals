@@ -128,10 +128,27 @@ bn* bn_xor(const bn* a, const bn* b) {
 
 ////// Arithmetic //////
 
+bn* bn_inc(const bn* a) {
+  bn* dst = alloc(bn__sizeof_inc(a));
+  dst->base256le[dst->len - 1] = 0;
+  bl_result err = bn__inc(dst, a);
+  assert(err == BL_OK);
+  bn__normalize(dst);
+  return dst;
+}
+
 bn* bn_add(const bn* a, const bn* b) {
   bn* dst = alloc(bn__sizeof_add(a, b));
   dst->base256le[dst->len - 1] = 0;
   bl_result err = bn__add(dst, a, b);
+  assert(err == BL_OK);
+  bn__normalize(dst);
+  return dst;
+}
+
+bn* bn_dec(const bn* a) {
+  bn* dst = alloc(bn__sizeof_dec(a));
+  bl_result err = bn__dec(dst, a);
   assert(err == BL_OK);
   bn__normalize(dst);
   return dst;

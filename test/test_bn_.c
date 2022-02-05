@@ -210,6 +210,20 @@ int main() {
     a->len = b->len = c->len = 128; bn__blank(a); bn__blank(b); bn__blank(c);
   }
 
+  printf("=== bn__inc ===\n"); {
+    bn__umax(a, 0xFFFF);
+    b->len = bn__sizeof_inc(a);
+    bn__inc(b, a); printbn(b);
+    a->len = b->len = 128; bn__blank(a); bn__blank(b);
+  }
+
+  printf("=== bn__dec ===\n"); {
+    bn__umax(a, 0x10000);
+    b->len = bn__sizeof_dec(a);
+    bn__dec(b, a); printbn(b);
+    a->len = b->len = 128; bn__blank(a); bn__blank(b);
+  }
+
   // done
   free(a); free(b); free(c); free(d);
   return 0;

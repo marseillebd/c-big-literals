@@ -132,5 +132,29 @@ int main() {
     bz_free(a); bz_free(b);
   }
 
+  printf("=== bz_inc ===\n"); {
+    a = bz_imax(0xFFFF);
+    b = bz_inc(a); printbz(b); bz_free(b);
+    bz_free(a); a = bz_imax(-0xFFFF);
+    b = bz_inc(a); printbz(b); bz_free(b);
+    bz_free(a); a = bz_imax(-1);
+    b = bz_inc(a); printbz(b); bz_free(b);
+    bz_free(a); a = bz_imax(0);
+    b = bz_inc(a); printbz(b); bz_free(b);
+    bz_free(a);
+  }
+
+  printf("=== bz_dec ===\n"); {
+    a = bz_imax(0xFFFF);
+    b = bz_dec(a); printbz(b); bz_free(b);
+    bz_free(a); a = bz_imax(-0xFFFF);
+    b = bz_dec(a); printbz(b); bz_free(b);
+    bz_free(a); a = bz_imax(1);
+    b = bz_dec(a); printbz(b); bz_free(b);
+    bz_free(a); a = bz_imax(0);
+    b = bz_dec(a); printbz(b); bz_free(b);
+    bz_free(a);
+  }
+
   return 0;
 }

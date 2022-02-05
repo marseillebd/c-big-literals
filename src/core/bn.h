@@ -64,6 +64,9 @@ size_t bn__sizeof_xor(const bn_* a, const bn_* b);
 
 ////// Arithmetic //////
 
+bl_result bn__inc(bn_* dst, const bn_* src);
+size_t bn__sizeof_inc(const bn_* src);
+
 // Place the result of `a + b` in `dst`.
 // This does _not_ require the destination to be blank.
 // Inputs need not be normalized (but the algorithm will complete faster if they are), and the output is not normalized.
@@ -73,6 +76,9 @@ size_t bn__sizeof_xor(const bn_* a, const bn_* b);
 bl_result bn__add(bn_* dst, const bn_* a, const bn_* b);
 // Return the maximum size (in base256 digits) that must be allocated to hold a `bn_` for the result of `a + b`.
 size_t bn__sizeof_add(const bn_* a, const bn_* b);
+
+bl_result bn__dec(bn_* dst, const bn_* src);
+size_t bn__sizeof_dec(const bn_* src);
 
 // Place the result of `a - b` in `dst`.
 // This does _not_ require the destination to be blank.
