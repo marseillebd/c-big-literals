@@ -226,8 +226,6 @@ bl_result bn__mul(bn_* dst, const bn_* a, const bn_* b) {
 }
 
 bl_result bn__divmod(bn_* q, bn_* r, const bn_* n, const bn_* d) {
-  // check for divide by zero
-  if (d->len == 0) { return BL_DIVZERO; }
   // check the destinations are large enough
   // I'm pessimistic about this so that I can simplify everything else about the algorithm
   if (q->len < n->len || r->len < d->len) { return BL_OVERFLOW; }

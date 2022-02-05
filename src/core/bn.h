@@ -1,5 +1,5 @@
-#ifndef BIGLIT_BN_CORE
-#define BIGLIT_BN_CORE
+#ifndef BIGLIT_CORE_BN
+#define BIGLIT_CORE_BN
 
 // This is the core interface for big natural numbers ℕ. It is only meant to be
 // exposed to advanced users, such as those implementing a more convenient API
@@ -100,7 +100,7 @@ size_t bn__sizeof_mul(const bn_* a, const bn_* b);
 // If `BN_OVERFLOW` is returned, the contents of `q` and `r` are undefined;
 // `BN_OVERFLOW` will be returned when either destination does not have enough space to store the result,
 // and may be returned if `q` has less than `bn__sizeof_div(a, b)` space or `r` less than `bn__sizeof_div(a, b)`.
-// If `d` is zero, `BN_DIVZERO` will be returned, and the contents of `q` and `r` are undefined.
+// Divide-by-zero is unchecked, but the algorithm will terminate even in this case, with undefined values of `q` and `r`.
 //
 // Of course the resulting `q * d + r == n`, but we also have the restriction that `0 ≤ r < d`.
 // The latter actually also trivial in the unsigned case here,

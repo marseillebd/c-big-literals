@@ -1,6 +1,7 @@
 #include "basic/bn.h"
 #include "core/bn.h"
 
+#include <signal.h>
 #include <stdlib.h>
 
 // All `bn` results must be normalized (no leading zeros), because we depend on normalization in several places.
@@ -14,9 +15,12 @@ static inline size_t max(size_t a, size_t b) {
   return a > b ? a : b;
 }
 
-static inline void* alloc(size_t nDigits) {
+static inline bn_* alloc(size_t nDigits) {
   assert(SIZE_MAX - sizeof(bn) >= nDigits);
-  return aligned_alloc(4, sizeof(bn_) + nDigits);
+  bn_* out = aligned_alloc(4, sizeof(bn_) + nDigits);
+  assert(out != NULL);
+  out->len = nDigits;
+  return out;
 }
 
 static inline bn* newZero() {
@@ -25,11 +29,14 @@ static inline bn* newZero() {
   return dst;
 }
 
-////// Initialization helpers //////
+////// Initialization //////
+
+void bn_free(bn* src) {
+  free(src);
+}
 
 bn* bn_umax(uintmax_t src) {
-  bn* dst = alloc(bn__sizeof(sizeof(uintmax_t)));
-  assert(dst != NULL);
+  bn* dst = alloc(sizeof(uintmax_t));
   bl_result err = bn__umax(dst, src);
   assert(err == BL_OK);
   return dst;
@@ -37,7 +44,6 @@ bn* bn_umax(uintmax_t src) {
 
 bn* bn_copy(const bn* src) {
   bn* dst = alloc(src->len);
-  assert(dst != NULL);
   dst->len = src->len;
   bl_result err = bn__copy(dst, src);
   assert(err == BL_OK);
@@ -101,7 +107,6 @@ bool bn_gte(const bn* a, const bn* b) {
 
 bn* bn_and(const bn* a, const bn* b) {
   bn* dst = alloc(bn__sizeof_and(a, b));
-  assert(dst != NULL);
   bn__and(dst, a, b);
   bn__normalize(dst);
   return dst;
@@ -109,7 +114,6 @@ bn* bn_and(const bn* a, const bn* b) {
 
 bn* bn_or(const bn* a, const bn* b) {
   bn* dst = alloc(bn__sizeof_or(a, b));
-  assert(dst != NULL);
   bn__or(dst, a, b);
   bn__normalize(dst);
   return dst;
@@ -117,7 +121,6 @@ bn* bn_or(const bn* a, const bn* b) {
 
 bn* bn_xor(const bn* a, const bn* b) {
   bn* dst = alloc(bn__sizeof_xor(a, b));
-  assert(dst != NULL);
   bn__xor(dst, a, b);
   bn__normalize(dst);
   return dst;
@@ -127,7 +130,7 @@ bn* bn_xor(const bn* a, const bn* b) {
 
 bn* bn_add(const bn* a, const bn* b) {
   bn* dst = alloc(bn__sizeof_add(a, b));
-  assert(dst != NULL);
+  dst->base256le[dst->len - 1] = 0;
   bl_result err = bn__add(dst, a, b);
   assert(err == BL_OK);
   bn__normalize(dst);
@@ -137,7 +140,6 @@ bn* bn_add(const bn* a, const bn* b) {
 bn* bn_sub(const bn* a, const bn* b) {
   if (b->len > a->len) { return newZero(); }
   bn* dst = alloc(bn__sizeof_sub(a, b));
-  assert(dst != NULL);
   bl_result err = bn__sub(dst, a, b);
   if (err == BL_OVERFLOW) {
     dst->len = 0;
@@ -150,7 +152,7 @@ bn* bn_sub(const bn* a, const bn* b) {
 bn* bn_mul(const bn* a, const bn* b) {
   if (a->len == 0 || b->len == 0) { return newZero(); }
   bn* dst = alloc(bn__sizeof_mul(a, b));
-  assert(dst != NULL);
+  bn__blank(dst);
   bl_result err = bn__mul(dst, a, b);
   assert(err == BL_OK);
   bn__normalize(dst);
@@ -158,11 +160,18 @@ bn* bn_mul(const bn* a, const bn* b) {
 }
 
 struct bn_divmod bn_divmod(const bn* a, const bn* b) {
+  if (b->len == 0) {
+    raise(SIGFPE);
+    assert(false && "raise(SGFPE) returned");
+    exit(1);
+  }
   struct bn_divmod dst;
   dst.div = alloc(bn__sizeof_div(a, b));
-  assert(dst.div != NULL);
   dst.mod = alloc(bn__sizeof_mod(a, b));
+  assert(dst.div != NULL);
   assert(dst.mod != NULL);
+  bn__blank(dst.div);
+  bn__blank(dst.mod);
   bl_result err = bn__divmod(dst.div, dst.mod, a, b);
   assert(err != BL_DIVZERO);
   assert(err == BL_OK);

@@ -67,7 +67,7 @@ These numbers support:
 
 The type here is called `bn`, and operations on it are prefixed with `bn_`.
 
-#### Integers, ℤ (TODO)
+#### Integers, ℤ
 
 These support:
   * arithmetic
@@ -86,11 +86,6 @@ Between these two representations, which intuition should a user have?
 In lieu of answering the question of representing sign, we defer it to applications.
 It is here that where one or the other representation will be "more natural".
 Internally, we use sign-and-magnitude, but thankfully, it is reasonably easy to implement either representation using digit extraction and logical operators.
-
-- [ ] core
-- [ ] malloc
-  - [ ] magnitude, bn2bz
-  - [ ] ℤ
 
 #### Rationals, ℚ (TODO)
 

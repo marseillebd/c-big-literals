@@ -10,14 +10,16 @@
 
 // This interface uses the system allocator (specifically `aligned_alloc`) to create memory for all results.
 // Results are always placed in a fresh pointer rather than attempt to share pointers.
-// The only arithmetic error condition allowed is divide-by-zero, and this causes a the process to crash.
+// Thus, to deallocate later, call `bn_free` on any `bn*` returned by the functions of this library.
+// The only arithmetic error condition allowed is divide-by-zero, and this raises the FPE signal.
 
 typedef struct bn_ bn;
 
 ////// Initialization //////
 
+void bn_free(bn* src);
+
 // Create a natural number from a native unsigned integer.
-// To deallocate later, call `free`.
 bn* bn_umax(uintmax_t src);
 
 bn* bn_copy(const bn* src);

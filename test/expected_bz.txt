@@ -1,0 +1,41 @@
+=== bz_imax ===
+42
+-0137
+7FFFFFFFFFFFFFFF
+-8000000000000000
+=== bz_copy ===
+-0137
+=== bz_cmp ===
+0 0 -1 1 0 0 1 -1
+1 -1
+=== bz_add ===
+DEADBF00
+DEADBF00
+DEADBEDE
+DEADBEDE
+-DEADBEDE
+-DEADBEDE
+-DEADBF00
+-DEADBF00
+0
+=== bz_sub ===
+DEADBEDE
+-DEADBEDE
+=== bz_neg ===
+-DEADBEEF
+=== bz_mul ===
+0EFFF1
+-0EFFF1
+0EFFF1
+-0EFFF1
+0
+0
+=== bz_divmod ===
+02
+1032
+-03
+0FCE
+02
+1032
+-03
+0FCE

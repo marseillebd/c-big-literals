@@ -211,6 +211,6 @@ int main() {
   }
 
   // done
-  free(a); free(b); free(c);
+  free(a); free(b); free(c); free(d);
   return 0;
 }
