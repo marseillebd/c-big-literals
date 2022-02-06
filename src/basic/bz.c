@@ -164,7 +164,7 @@ struct bz_divmod bz_divmod(bz a, bz b) {
     .div = { .isNeg = false, .magnitude = res.div },
     .mod = { .isNeg = false, .magnitude = res.mod }
   };
-  if (a.isNeg != b.isNeg) {
+  if (a.isNeg != b.isNeg && res.mod->len != 0) {
     out.div.isNeg = true;
     bn* tmp = bn_inc(out.div.magnitude);
     bn_free(out.div.magnitude);

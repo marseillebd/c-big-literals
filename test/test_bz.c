@@ -130,6 +130,11 @@ int main() {
     a.isNeg = false; b.isNeg = true;
     r = bz_divmod(a, b); printbz(r.div); printbz(r.mod); bz_free(r.div); bz_free(r.mod);
     bz_free(a); bz_free(b);
+
+    a = bz_imax(8);
+    b = bz_imax(-2);
+    r = bz_divmod(a, b); printbz(r.div); printbz(r.mod); bz_free(r.div); bz_free(r.mod);
+    bz_free(a); bz_free(b);
   }
 
   printf("=== bz_inc ===\n"); {

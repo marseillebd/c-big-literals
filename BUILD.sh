@@ -12,8 +12,8 @@ flags_link=''
 flags_include='-I src'
 
 memcheck=''
-memcheck='valgrind'
-memcheck='valgrind --leak-check=full'
+# memcheck='valgrind'
+# memcheck='valgrind --leak-check=full'
 
 difftool='diff'
 if command -v icdiff 2>&1 >/dev/null; then difftool=icdiff; fi

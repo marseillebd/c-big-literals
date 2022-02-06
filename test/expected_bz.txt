@@ -39,6 +39,8 @@ DEADBEDE
 1032
 -03
 0FCE
+04
+0
 === bz_inc ===
 010000
 -FFFE
