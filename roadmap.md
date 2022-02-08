@@ -3,15 +3,20 @@
 ## v0.1.0
 
   * version reporting scheme
+  * documentation
+    - [x] basic ℕ
+    - [ ] basic ℤ
 
 ## v0.2.0
 
+  * documentation
+    - [x] core ℕ
+    - [ ] core ℤ
   * have gained some use in bsvm
   * float interface (storage only)
   * more in the basic ℕ, ℤ interfaces
     - [ ] abs bz -> bz
     - [ ] min, max
-
 
 ## v0.3.0
 

@@ -231,14 +231,17 @@ bn* bn_shl(bn* src, size_t amt) {
 ////// Destructive Operations //////
 
 bn_buffer* bn_new(size_t nBytes, bn* src) {
-  bn_* dst = alloc(nBytes);
   if (src != NULL) {
+    bn_* dst = alloc(max(nBytes,src->len));
     bn__copy(dst, src);
+    dst->len = nBytes;
+    return dst;
   }
   else {
+    bn_* dst = alloc(nBytes);
     bn__blank(dst);
+    return dst;
   }
-  return dst;
 }
 
 bn* bn_create(bn_buffer* src, size_t maxBytes) {

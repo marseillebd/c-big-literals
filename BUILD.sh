@@ -57,3 +57,8 @@ if ! diff -q test/expected_bz.txt test/actual_bz.txt; then
   $difftool test/expected_bz.txt test/actual_bz.txt
   exit 1
 fi
+
+mkdir -p 'build/doc'
+pandoc -o 'build/doc/index.html' 'doc/index.rst'
+pandoc -o 'build/doc/basic-bn.html' 'doc/basic/bn.rst'
+pandoc -o 'build/doc/basic-bz.html' 'doc/basic/bz.rst'
