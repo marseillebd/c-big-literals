@@ -164,14 +164,36 @@ struct bz_divmod bz_divmod(bz a, bz b) {
     .div = { .isNeg = false, .magnitude = res.div },
     .mod = { .isNeg = false, .magnitude = res.mod }
   };
-  if (a.isNeg != b.isNeg && res.mod->len != 0) {
-    out.div.isNeg = true;
-    bn* tmp = bn_inc(out.div.magnitude);
-    bn_free(out.div.magnitude);
-    out.div.magnitude = tmp;
-    tmp = bn_sub(b.magnitude, out.mod.magnitude);
-    bn_free(out.mod.magnitude);
-    out.mod.magnitude = tmp;
+  if (res.mod->len == 0) {
+    out.div.isNeg = (a.isNeg ^ b.isNeg) & (out.div.magnitude->len != 0);
+  }
+  else if (a.isNeg & !b.isNeg) {
+    out.div.isNeg = out.div.magnitude->len != 0;
+    {
+      bn* tmp = bn_inc(out.div.magnitude);
+      bn_free(out.div.magnitude);
+      out.div.magnitude = tmp;
+    }
+    {
+      bn* tmp = bn_sub(b.magnitude, out.mod.magnitude);
+      bn_free(out.mod.magnitude);
+      out.mod.magnitude = tmp;
+    }
+  }
+  else if (!a.isNeg & b.isNeg) {
+    out.div.isNeg = out.div.magnitude->len != 0;
+  }
+  else if (a.isNeg & b.isNeg) {
+    {
+      bn* tmp = bn_inc(out.div.magnitude);
+      bn_free(out.div.magnitude);
+      out.div.magnitude = tmp;
+    }
+    {
+      bn* tmp = bn_sub(b.magnitude, out.mod.magnitude);
+      bn_free(out.mod.magnitude);
+      out.mod.magnitude = tmp;
+    }
   }
   return out;
 }
