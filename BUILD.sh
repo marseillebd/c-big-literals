@@ -59,6 +59,8 @@ if ! diff -q test/expected_bz.txt test/actual_bz.txt; then
 fi
 
 mkdir -p 'build/doc'
-pandoc -o 'build/doc/index.html' 'doc/index.rst'
-pandoc -o 'build/doc/basic-bn.html' 'doc/basic/bn.rst'
-pandoc -o 'build/doc/basic-bz.html' 'doc/basic/bz.rst'
+pandoc -o 'build/doc/index.html' \
+  'doc/index.rst' \
+  'doc/basic/bn.rst' \
+  'doc/basic/bz.rst' \
+  'doc/basic/meta.rst'

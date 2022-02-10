@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #include "common.h"
+#include "basic/version.h"
 
 // This interface uses the system allocator (specifically `aligned_alloc`) to create memory for all results.
 // Results are always placed in a fresh pointer rather than attempt to share pointers.

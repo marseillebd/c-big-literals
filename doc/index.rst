@@ -40,10 +40,18 @@ Usage
 
 
 Basic Interfaces
+  :API Version: 0.1.0
+  :Date: 2022-02-??
+  :Copyright: 2022 Eric Demko
+  :License: BSD3
+
   The basic interfaces are the easiest way to interact with this library.
 
-  - `Basic Natural Number API <basic-bn.html>`_
-  - `Basic Integer API <basic-bz.html>`_
+  - `Common API`_
+  - `Basic Natural Number API`_
+  - `Basic Integer API`_
+  - `Basic API Versioning`_
+  - `Basic API Limits`_
 
 Core Interfaces
   The core interfaces allow access to the minimal functionality and can be used to build additional interfaces.
@@ -51,3 +59,19 @@ Core Interfaces
   which is not very suitable for library implementors, not library users.
   
   - Core Natural Number API
+
+Common API
+==========
+
+Enum ``bl_ord``
+~~~~~~~~~~~~~~~
+
+Report the results of comparison.
+
+Values
+  - ``BL_LT`` for less than
+  - ``BL_EQ`` for equal to
+  - ``BL_GT`` for greater than
+
+See also
+  - `Function bn_cmp`_

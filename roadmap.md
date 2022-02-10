@@ -1,16 +1,10 @@
 # Big Literal Roadmap
 
-## v0.1.0
-
-  * version reporting scheme
-  * documentation
-    - [x] basic ℕ
-    - [ ] basic ℤ
-
 ## v0.2.0
 
+  * before compiling, accumulate headers
   * documentation
-    - [x] core ℕ
+    - [ ] core ℕ
     - [ ] core ℤ
   * have gained some use in bsvm
   * float interface (storage only)

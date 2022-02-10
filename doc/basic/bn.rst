@@ -1,10 +1,9 @@
 Basic Natural Number API
 ========================
 
-:API Version: 0.1.0
-:Date: 2022-02-07
-:Copyright: 2022 Eric Demko
-:License: BSD3
+`\<\<prev <Common API_>`_
+`^up^ <Big Literals C Library_>`_
+`next\>\> <Basic Integer API_>`_
 
 Overview
 --------
@@ -14,7 +13,7 @@ The advantage we gain for the cost of memory is that it computations can be writ
 
 Mutation
   The primary functions of this library are pure, up to memory allocation.
-  The functions in `Destructive Operations`_ are the exception.
+  The functions in `ℕ Destructive Operations`_ are the exception.
 
 Memory Management
   Inputs are taken by-reference, and all outputs are placed in freshly-allocated memory
@@ -39,12 +38,12 @@ Error Handling
 Table of Contents
 -----------------
 
-  - `Construction and Destruction`_
+  - `ℕ Construction and Destruction`_
     - `Type bn`_
     - `Function bn_umax`_
     - `Function bn_copy`_
-    - `Function bn_free`_
-  - `Arithmetic Operations`_
+    - `Procedure bn_free`_
+  - `ℕ Arithmetic Operations`_
     - `Function bn_add`_
     - `Function bn_sub`_
     - `Function bn_inc`_
@@ -54,42 +53,40 @@ Table of Contents
     - `Function bn_mod`_
     - `Struct bn_divmod`_
     - `Function bn_divmod`_
-  - `Relational Operations`_
+  - `ℕ Relational Operations`_
     - `Enum bl_ord`_
     - `Function bn_cmp`_
-    - `Function bl_eq`_
-    - `Function bl_neq`_
-    - `Function bl_lt`_
-    - `Function bl_lte`_
-    - `Function bl_gt`_
-    - `Function bl_gte`_
-  - `Bitwise Operations`_
+    - `Function bn_eq`_
+    - `Function bn_neq`_
+    - `Function bn_lt`_
+    - `Function bn_lte`_
+    - `Function bn_gt`_
+    - `Function bn_gte`_
+  - `ℕ Bitwise Operations`_
     - `Function bn_and`_
     - `Function bn_or`_
     - `Function bn_xor`_
     - `Function bn_shr`_
     - `Function bn_shl`_
-  - `Indexing Operations`_
+  - `ℕ Indexing Operations`_
     - `Function bn_bit`_
     - `Function bn_nBits`_
     - `Function bn_byte`_
     - `Function bn_nBytes`_
-  - `Destructive Operations`_
+  - `ℕ Destructive Operations`_
     - `Type bn_buffer`_
     - `Function bn_new`_
     - `Function bn_create`_
     - `Procedure bn_writeBit`_
     - `Procedure bn_writeByte`_
-  - `Version Information`_
-  - `Limits`_
 
 
-Construction and Destruction
-----------------------------
+ℕ Construction and Destruction
+------------------------------
 
 `\<\<prev <Basic Natural Number API_>`_
 `^up^ <Basic Natural Number API_>`_
-`next\>\> <Arithmetic Operations_>`_
+`next\>\> <ℕ Arithmetic Operations_>`_
 
 Type ``bn``
 ~~~~~~~~~~~
@@ -101,13 +98,13 @@ Note
   On most machines, this should allow the two low-order bits to be used for tagging.
 
 See also
-  `Function bn_free`_ to release resources held by values of this type.
+  `Procedure bn_free`_ to release resources held by values of this type.
 
 Function ``bn_umax``
 ~~~~~~~~~~~~~~~~~~~~
 
 Synopsis
-  ``bn* dst bn_umax(uintmax_t src)``
+  ``bn* dst = bn_umax(uintmax_t src)``
 
 Semantics
   Create a new `Type bn`_ which represents the same number as ``src``.
@@ -140,8 +137,8 @@ Lifetime & Ownership
   - ``src`` is an immutable borrow.
   - The lifetime of ``dst`` begins, and its ownership resides with the caller.
 
-Function ``bn_free``
-~~~~~~~~~~~~~~~~~~~~
+Procedure ``bn_free``
+~~~~~~~~~~~~~~~~~~~~~
 
 Synopsis
   ``void bn_free(bn* self)``
@@ -153,12 +150,12 @@ Lifetime & Ownership
   Takes ownership of ``self`` and ends its lifetime.
 
 
-Arithmetic Operations
----------------------
+ℕ Arithmetic Operations
+-----------------------
 
-`\<\<prev <Construction and Destruction_>`_
+`\<\<prev <ℕ Construction and Destruction_>`_
 `^up^ <Basic Natural Number API_>`_
-`next\>\> <Relational Operations_>`_
+`next\>\> <ℕ Relational Operations_>`_
 
 Function ``bn_add``
 ~~~~~~~~~~~~~~~~~~~
@@ -352,25 +349,12 @@ See also
   - `Function bn_div`_
   - `Function bn_mod`_
 
-Relational Operations
----------------------
+ℕ Relational Operations
+-----------------------
 
-`\<\<prev <Arithmetic Operations_>`_
+`\<\<prev <ℕ Arithmetic Operations_>`_
 `^up^ <Basic Natural Number API_>`_
-`next\>\> <Bitwise Operations_>`_
-
-Enum ``bl_ord``
-~~~~~~~~~~~~~~~
-
-Report the results of comparison.
-
-Values
-  - ``BL_LT`` for less than
-  - ``BL_EQ`` for equal to
-  - ``BL_GT`` for greater than
-
-See also
-  - `Function bn_cmp`_
+`next\>\> <ℕ Bitwise Operations_>`_
 
 Function ``bn_cmp``
 ~~~~~~~~~~~~~~~~~~~
@@ -392,7 +376,7 @@ Ownership and Lifetime
 See also
   - `Enum bl_ord`_
 
-Function ``bl_eq``
+Function ``bn_eq``
 ~~~~~~~~~~~~~~~~~~
 
 Synopsis
@@ -409,7 +393,7 @@ See also
   - `Enum bl_ord`_
   - `Function bn_cmp`_
 
-Function ``bl_neq``
+Function ``bn_neq``
 ~~~~~~~~~~~~~~~~~~~
 
 Synopsis
@@ -426,7 +410,7 @@ See also
   - `Enum bl_ord`_
   - `Function bn_cmp`_
 
-Function ``bl_lt``
+Function ``bn_lt``
 ~~~~~~~~~~~~~~~~~~
 
 Synopsis
@@ -443,7 +427,7 @@ See also
   - `Enum bl_ord`_
   - `Function bn_cmp`_
 
-Function ``bl_lte``
+Function ``bn_lte``
 ~~~~~~~~~~~~~~~~~~~
 
 Synopsis
@@ -460,7 +444,7 @@ See also
   - `Enum bl_ord`_
   - `Function bn_cmp`_
 
-Function ``bl_gt``
+Function ``bn_gt``
 ~~~~~~~~~~~~~~~~~~
 
 Synopsis
@@ -477,7 +461,7 @@ See also
   - `Enum bl_ord`_
   - `Function bn_cmp`_
 
-Function ``bl_gte``
+Function ``bn_gte``
 ~~~~~~~~~~~~~~~~~~~
 
 Synopsis
@@ -495,12 +479,12 @@ See also
   - `Function bn_cmp`_
 
 
-Bitwise Operations
-------------------
+ℕ Bitwise Operations
+--------------------
 
-`\<\<prev <Relational Operations_>`_
+`\<\<prev <ℕ Relational Operations_>`_
 `^up^ <Basic Natural Number API_>`_
-`next\>\> <Indexing Operations_>`_
+`next\>\> <ℕ Indexing Operations_>`_
 
 Function ``bn_and``
 ~~~~~~~~~~~~~~~~~~~
@@ -635,12 +619,12 @@ Performance
   :math:`O(\log_{256}(\mathtt a))`
 
 
-Indexing Operations
--------------------
+ℕ Indexing Operations
+---------------------
 
-`\<\<prev <Bitwise Operations_>`_
+`\<\<prev <ℕ Bitwise Operations_>`_
 `^up^ <Basic Natural Number API_>`_
-`next\>\> <Destructive Operations_>`_
+`next\>\> <ℕ Destructive Operations_>`_
 
 
 Function ``bn_bit``
@@ -658,7 +642,7 @@ Semantics
   :``i``:
     An index in :math:`\mathtt{i} \in \mathbb N`.
 
-    The maximum query-able index is `limited <Limits_>`_ by the size of the machine.
+    The maximum query-able index is `limited <Basic API Limits_>`_ by the size of the machine.
   :``isSet``:
     A boolean :math:`\mathtt{isSet} = a_\mathtt{i}`.
 
@@ -684,7 +668,7 @@ Semantics
     An index :math:`\mathtt{n} \in \mathbb N`
     such that :math:`a_\mathtt{n} = 1` and :math:`\forall i > \mathtt{n}.\;a_i = 0`.
 
-    The maximum resulting index is `limited <Limits_>`_ by the size of the machine.
+    The maximum resulting index is `limited <Basic API Limits_>`_ by the size of the machine.
 
 Ownership and Lifetime
   ``src`` is an immutable borrow.
@@ -708,7 +692,7 @@ Semantics
   :``i``:
     An index in :math:`\mathtt{i} \in \mathbb N`.
 
-    The maximum query-able index is `limited <Limits_>`_ by the size of the machine.
+    The maximum query-able index is `limited <Basic API Limits_>`_ by the size of the machine.
   :``b``:
     A coefficient :math:`0 \leq \mathtt{b} = a_\mathtt{i} \leq 255`.
 
@@ -735,7 +719,7 @@ Semantics
     An index :math:`\mathtt{n} \in \mathbb N`
     such that :math:`a_\mathtt{n} > 0` and :math:`\forall i > \mathtt{n}.\;a_i = 0`.
 
-    The maximum resulting index is `limited <Limits_>`_ by the size of the machine.
+    The maximum resulting index is `limited <Basic API Limits_>`_ by the size of the machine.
 
 Ownership and Lifetime
   ``src`` is an immutable borrow.
@@ -743,12 +727,12 @@ Ownership and Lifetime
 See also
   - `Function bn_nBits`_
 
-Destructive Operations
-----------------------
+ℕ Destructive Operations
+------------------------
 
-`\<\<prev <Indexing Operations_>`_
+`\<\<prev <ℕ Indexing Operations_>`_
 `^up^ <Basic Natural Number API_>`_
-`next\>\> <Version Information_>`_
+`next\>\> <Basic Integer API_>`_
 
 This part of the interface is not recommended for general use.
 It does, however, provide an escape hatch which can be used to reasonably-efficiently produce natural numbers using algorithms not listed in the rest of the interface.
@@ -789,7 +773,7 @@ Lifetime & Ownership
   - ``src`` is an immutable borrow.
 
 Note
-  The maximum number of bytes in the buffer is `limited <Limits_>`_ by the system.
+  The maximum number of bytes in the buffer is `limited <Basic API Limits_>`_ by the system.
 
 See also
   - `Type bn_buffer`_
@@ -806,12 +790,12 @@ Semantics
 
   :maxBytes:
     The maximum number of bytes that might contribute to the final number.
-    Pass ``SIZE_MAX`` to never truncate (up to the system `limits <Limits_>`_).
+    Pass ``SIZE_MAX`` to never truncate (up to the system `limits <Basic API Limits_>`_).
   :n:
     :math:`\mathtt n \equiv \mathtt{src}\:(\text{mod }256^{\mathtt{maxBytes}})`
 
 Note
-  The maximum number of bytes in the result is `limited <Limits_>`_ by the system.
+  The maximum number of bytes in the result is `limited <Basic API Limits_>`_ by the system.
 
 Procedure ``bn_writeBit``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -868,47 +852,3 @@ Lifetime & Ownership
 
 See also
   - `Procedure bn_writeBit`_
-
-
-Version Information
--------------------
-
-`\<\<prev <Destructive Operations_>`_
-`^up^ <Basic Natural Number API_>`_
-`next\>\> <Limits_>`_
-
-We conform to `Semantic Versioning`_.
-The API documented here is for version ``0.1.0``.
-
-.. _`Semantic Versioning`: https://semver.org/
-
-Version Macros
-~~~~~~~~~~~~~~~~~~~
-
-  - ``BIGLIT_BASIC_MAJOR``: 0
-  - ``BIGLIT_BASIC_MINOR``: 1
-  - ``BIGLIT_BASIC_PATCH``: 0
-
-
-Limits
-------
-
-`\<\<prev <Version Information_>`_
-`^up^ <Basic Natural Number API_>`_
-
-When working with bit-indices, we use ``size_t``.
-On "reasonable" modern machines, this limit restricts us to working with numbers that take up to one-eight the addressable memory space.
-Frankly, if you are working with numbers this large, you have probably already succumbed to a DoS attack.
-Remember, this library is for working with source-code literals, and it's hard to believe that (in the foreseeable future) a source file large enough to store such a number would fit on a single disk.
-
-Likewise, when working with byte-indices, we also use ``size_t``.
-On "reasonable" modern machines, this limit restricts us to working with numbers that take up to the entire addressable memory space.
-This is already a less restrictive limit than the bit-index limit, and so the same resource utilization analysis applies here.
-
-While the source code is reasonably portable, we do make some assumptions about the target architecture and the operation of your compiler.
-We attempt to sanity check this using static asserts.
-
-  - The target has an eight-bit byte: i.e. ``CHAR_BIT == 8``.
-  - The target uses exactly one byte to store a ``uint8_t``: i.e. ``sizeof(uint8_t) == 1``.
-  - FIXME move elsewhere, where it counts: The target performs arithmetic right shift on ``int16_t`` in two's-complement representation:
-    e.g. ``(int16_t)-1 >> 1 == -1``.
