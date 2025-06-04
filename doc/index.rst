@@ -20,7 +20,7 @@ Interface Documentation
 -----------------------
 
 Building
-  Clone the git repository from <https://github.com/edemko/biglit>.
+  Clone the git repository from <https://github.com/marseillebd/biglit>.
   Inside the directory is a ``./BUILD.sh`` script.
   By default it uses a recent gcc to craete libraries and pandoc to create documentation.
 
